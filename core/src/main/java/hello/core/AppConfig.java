@@ -13,20 +13,29 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppConfig {
 
+    //@Bean memberService() -> new MemoryMemberRepository();
+    //@Bean orderService() -> new MemoryMemberRepository();
+    // MemoryMemberRepository() 두번 호출 싱글톤이 깨지는 것이 아닌가? -> test
+    // MemoryMemberRepository 인스턴스는 모두 같은 인스턴스가 공유되어 사용된다.
+    // @Configuration를 사용함으로써 싱글톤을 보장
+
     @Bean
     public MemberService memberService(){
-        return new MemberServiceImpl(memberRepositiry());
+        System.out.println("call AppConfig.memberService");
+        return new MemberServiceImpl(memberRepository());
     }
     @Bean
-    public static MemoryMemberRepository memberRepositiry() {
+    public MemoryMemberRepository memberRepository() {
+        System.out.println("call AppConfig.memberRepository");
         return new MemoryMemberRepository();
     }
     @Bean
     public OrderService orderService(){
-        return new OrderServiceImpl(memberRepositiry(), discountPolicy());
+        System.out.println("call AppConfig.orderService");
+        return new OrderServiceImpl(memberRepository(), discountPolicy());
     }
     @Bean
-    public static DiscountPolicy discountPolicy() {
+    public DiscountPolicy discountPolicy() {
 
 //        return new FixDiscountPolicy();
         return new RateDiscountPolicy();
